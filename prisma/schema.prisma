@@ -1,0 +1,169 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["auth", "public"]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model users {
+  instance_id                 String?              @db.Uuid
+  id                          String               @id @db.Uuid
+  aud                         String?              @db.VarChar(255)
+  role                        String?              @db.VarChar(255)
+  email                       String?              @db.VarChar(255)
+  encrypted_password          String?              @db.VarChar(255)
+  email_confirmed_at          DateTime?            @db.Timestamptz(6)
+  invited_at                  DateTime?            @db.Timestamptz(6)
+  confirmation_token          String?              @db.VarChar(255)
+  confirmation_sent_at        DateTime?            @db.Timestamptz(6)
+  recovery_token              String?              @db.VarChar(255)
+  recovery_sent_at            DateTime?            @db.Timestamptz(6)
+  email_change_token_new      String?              @db.VarChar(255)
+  email_change                String?              @db.VarChar(255)
+  email_change_sent_at        DateTime?            @db.Timestamptz(6)
+  last_sign_in_at             DateTime?            @db.Timestamptz(6)
+  raw_app_meta_data           Json?
+  raw_user_meta_data          Json?
+  is_super_admin              Boolean?
+  created_at                  DateTime?            @db.Timestamptz(6)
+  updated_at                  DateTime?            @db.Timestamptz(6)
+  phone                       String?              @unique
+  phone_confirmed_at          DateTime?            @db.Timestamptz(6)
+  phone_change                String?              @default("")
+  phone_change_token          String?              @default("") @db.VarChar(255)
+  phone_change_sent_at        DateTime?            @db.Timestamptz(6)
+  confirmed_at                DateTime?            @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
+  email_change_token_current  String?              @default("") @db.VarChar(255)
+  email_change_confirm_status Int?                 @default(0) @db.SmallInt
+  banned_until                DateTime?            @db.Timestamptz(6)
+  reauthentication_token      String?              @default("") @db.VarChar(255)
+  reauthentication_sent_at    DateTime?            @db.Timestamptz(6)
+  is_sso_user                 Boolean              @default(false)
+  deleted_at                  DateTime?            @db.Timestamptz(6)
+  is_anonymous                Boolean              @default(false)
+  identities                  identities[]
+  mfa_factors                 mfa_factors[]
+  one_time_tokens             one_time_tokens[]
+  sessions                    sessions[]
+  assignment_project          assignment_project[] @ignore
+  assignment_task             assignment_task[]    @ignore
+  profile                     profile?
+
+  @@index([instance_id])
+  @@index([is_anonymous])
+  @@schema("auth")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model assignment_project {
+  project_id BigInt?
+  assignee   String? @db.Uuid
+  users      users?  @relation(fields: [assignee], references: [id], onDelete: Cascade)
+
+  @@ignore
+  @@schema("public")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model assignment_task {
+  task_id    BigInt?
+  project_id BigInt?
+  assignee   String? @db.Uuid
+  users      users?  @relation(fields: [assignee], references: [id], onDelete: Cascade, map: "assignment_assignee_fkey")
+  task       task?   @relation(fields: [task_id], references: [id], onDelete: Cascade, map: "assignment_task_id_fkey")
+
+  @@ignore
+  @@schema("public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model profile {
+  id         String    @id @db.Uuid
+  updated_at DateTime? @db.Timestamptz(6)
+  username   String?   @unique
+  full_name  String?
+  avatar_url String?
+  users      users     @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model project {
+// @@schema("public")
+// }
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model task {
+  id              BigInt            @id @default(autoincrement())
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  changed_at      DateTime?         @db.Timestamptz(6)
+  name            String            @db.VarChar
+  content         String?
+  status          status?
+  priority        Int?              @default(1) @db.SmallInt
+  project         BigInt?
+  assignment_task assignment_task[] @ignore
+
+  @@schema("public")
+}
+
+enum aal_level {
+  aal1
+  aal2
+  aal3
+
+  @@schema("auth")
+}
+
+enum code_challenge_method {
+  s256
+  plain
+
+  @@schema("auth")
+}
+
+enum factor_status {
+  unverified
+  verified
+
+  @@schema("auth")
+}
+
+enum factor_type {
+  totp
+  webauthn
+
+  @@schema("auth")
+}
+
+enum one_time_token_type {
+  confirmation_token
+  reauthentication_token
+  recovery_token
+  email_change_token_new
+  email_change_token_current
+  phone_change_token
+
+  @@schema("auth")
+}
+
+/// This enum is commented in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+enum status {
+  To_Do       @map("To-Do")
+  In_progress @map("In progress")
+  Done
+
+  @@schema("public")
+}
