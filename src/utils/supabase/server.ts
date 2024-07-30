@@ -1,10 +1,11 @@
-import { type CookieOptions,createServerClient } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import {Database} from "../../../types/supabase";
 
 export function createClient() {
     const cookieStore = cookies()
 
-    return createServerClient(
+    return createServerClient<Database>(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -26,6 +27,9 @@ export function createClient() {
                     }
                 },
             },
+            db: {
+                schema: 'public',
+            }
         }
     )
 }
