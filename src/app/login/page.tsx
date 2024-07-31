@@ -1,15 +1,40 @@
-import Image from "next/image"
+"use client"
+import {zodResolver} from "@hookform/resolvers/zod"
 import Link from "next/link"
+import {useForm} from "react-hook-form"
+import {z} from "zod"
 
 import {Button} from "@/components/ui/button"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
-
 import {login} from "@/app/login/actions";
 
+
+const formSchema = z.object({
+    email: z.string().email({message: "Invalid email address"}),
+    password: z.string().min(4, {message: "Password must be at least 4 characters long"}),
+})
+
+
 export default function Dashboard() {
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: "",
+            password: ""
+        },
+    })
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const error = await login(values)
+        if (error) {
+            form.setError("email", {message: error})
+        }
+    }
+
     return (
-        <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <div className="w-full lg:grid lg:min-h-[600px] xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
@@ -18,35 +43,37 @@ export default function Dashboard() {
                             Enter your email below to login to your account
                         </p>
                     </div>
-                    <form>
-                        <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    placeholder="m@example.com"
-                                    required
-                                />
-                            </div>
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Link
-                                        href="/forgot-password"
-                                        className="ml-auto inline-block text-sm underline"
-                                    >
-                                        Forgot your password?
-                                    </Link>
-                                </div>
-                                <Input id="password" name="password" type="password" required/>
-                            </div>
-                            <Button type="submit" className="w-full" formAction={login}>
-                                Login
-                            </Button>
-                        </div>
-                    </form>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({field}) => {
+                                    return (
+                                        <FormItem>
+                                            <FormLabel id="email">Email</FormLabel>
+                                            <FormControl id="email">
+                                                <Input placeholder="user@email.com" {...field} />
+                                            </FormControl>
+                                            <FormMessage id="email"/>
+                                        </FormItem>)
+                                }}/>
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({field}) => {
+                                    return (
+                                        <FormItem>
+                                            <FormLabel id="password">Email</FormLabel>
+                                            <FormControl id="password">
+                                                <Input type={"password"} placeholder="******" {...field} />
+                                            </FormControl>
+                                            <FormMessage id="password"/>
+                                        </FormItem>)
+                                }}/>
+                            <Button type="submit" className="w-full">Submit</Button>
+                        </form>
+                    </Form>
                     <div className="mt-4 text-center text-sm">
                         Don&apos;t have an account?{" "}
                         <Link href="#" className="underline">
@@ -55,15 +82,6 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-            </div>
-            <div className="hidden bg-muted lg:block">
-                <Image
-                    src="/placeholder.svg"
-                    alt="Image"
-                    width="1920"
-                    height="1080"
-                    className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                />
             </div>
         </div>
     )
