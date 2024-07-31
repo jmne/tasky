@@ -21,7 +21,6 @@ import {
 import {Textarea} from "@/components/ui/textarea";
 
 import {trpc} from "@/utils/trpc";
-import {PlusIcon} from "lucide-react";
 
 const formSchema = z.object({
     name: z.string(),
@@ -30,9 +29,15 @@ const formSchema = z.object({
     status: z.enum(["To-Do", "In progress", "Done"]),
 })
 
-export default function CreateTask({project_id}: { project_id: number }) {
+export function ModifyTask({id, title, content, priority, status}: {
+    id: number,
+    title: string,
+    content: string,
+    priority: number,
+    status: "To-Do" | "In progress" | "Done"
+}) {
 
-    const {mutate} = trpc.createTask.useMutation({
+    const {mutate} = trpc.postTask.useMutation({
         onSuccess: () => {
             // To-do: Add toast notification
             console.log("Task updated")
@@ -45,20 +50,20 @@ export default function CreateTask({project_id}: { project_id: number }) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            content: "",
-            priority: 0,
-            status: "To-Do",
+            name: title,
+            content: content,
+            priority: priority,
+            status: status,
         },
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         mutate({
+            id: id,
             name: values.name,
             content: values.content,
             priority: values.priority,
-            status: values.status,
-            project: project_id,
+            status: values.status
         })
         setOpen(false);
         window.location.reload();
@@ -75,13 +80,7 @@ export default function CreateTask({project_id}: { project_id: number }) {
     }, [isSubmitSuccessful, reset])
     return (
         <Dialog open={open} onOpenChange={setOpen}> <DialogTrigger asChild>
-            <Button
-                variant='outline'
-                size='icon'
-                className='absolute bottom-5 right-10 z-50 h-16 w-16 rounded-full'
-            >
-                <PlusIcon/>
-            </Button>
+            <Button className="w-9/12">Edit</Button>
         </DialogTrigger>
             <DialogContent aria-describedby="Task">
                 <DialogTitle>
