@@ -7,17 +7,25 @@ import {z} from "zod"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input"
+
 import {login} from "@/app/login/actions";
 
-
+// Define the schema for the form using Zod
 const formSchema = z.object({
     email: z.string().email({message: "Invalid email address"}),
     password: z.string().min(4, {message: "Password must be at least 4 characters long"}),
 })
 
-
+/**
+ * Dashboard component
+ *
+ * This component renders a login form for the dashboard.
+ *
+ * @returns {JSX.Element} The rendered dashboard component
+ */
 export default function Dashboard() {
 
+    // Initialize the form with default values and validation schema
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -26,6 +34,13 @@ export default function Dashboard() {
         },
     })
 
+    /**
+     * Handle form submission
+     *
+     * @param {Object} values - The form values
+     * @param {string} values.email - The email entered by the user
+     * @param {string} values.password - The password entered by the user
+     */
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const error = await login(values)
         if (error) {
@@ -66,7 +81,7 @@ export default function Dashboard() {
                                         <FormItem>
                                             <FormLabel id="password">Email</FormLabel>
                                             <FormControl id="password">
-                                                <Input type={"password"} placeholder="******" {...field} />
+                                                <Input type="password" placeholder="******" {...field} />
                                             </FormControl>
                                             <FormMessage id="password"/>
                                         </FormItem>)

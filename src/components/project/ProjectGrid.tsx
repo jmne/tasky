@@ -9,6 +9,13 @@ import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components
 
 import {trpc} from "@/utils/trpc";
 
+/**
+ * ProjectGrid component
+ *
+ * This component renders a grid of project cards. Each card displays project details and provides options to modify, assign, or delete the project.
+ *
+ * @returns {JSX.Element} The rendered project grid component
+ */
 export default function ProjectGrid() {
 
     const projects = trpc.getProjects.useQuery()
@@ -48,6 +55,4 @@ export default function ProjectGrid() {
             })}
         </div>
     );
-
-
 }

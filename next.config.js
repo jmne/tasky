@@ -1,32 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    dirs: ['src'],
-  },
+    eslint: {
+        dirs: ['src'],
+    },
 
-  distDir: 'build',
+    reactStrictMode: true,
+    swcMinify: true,
+    poweredByHeader: false,
 
-  reactStrictMode: true,
-  swcMinify: true,
+    output: "standalone",
 
-  // SVGR
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/i,
-      issuer: /\.[jt]sx?$/,
-      use: [
-        {
-          loader: '@svgr/webpack',
-          options: {
-            typescript: true,
-            icon: true,
-          },
-        },
-      ],
-    });
+    // SVGR
+    webpack(config) {
+        config.module.rules.push({
+            test: /\.svg$/i,
+            issuer: /\.[jt]sx?$/,
+            use: [
+                {
+                    loader: '@svgr/webpack',
+                    options: {
+                        typescript: true,
+                        icon: true,
+                    },
+                },
+            ],
+        });
 
-    return config;
-  },
+        return config;
+    },
 };
 
 module.exports = nextConfig;

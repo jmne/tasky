@@ -11,7 +11,13 @@ import {Input} from '@/components/ui/input';
 import {createClient} from '@/utils/supabase/server';
 import useDarkMode from '@/utils/theme';
 
-
+/**
+ * NavigationMenu component
+ *
+ * This component renders the navigation menu with a logo, breadcrumb, search input, dark mode toggle, and user dropdown.
+ *
+ * @returns {JSX.Element | null} The rendered navigation menu component or null if the user is not authenticated
+ */
 export default async function NavigationMenu() {
 
     const supabase = createClient();
@@ -29,6 +35,7 @@ export default async function NavigationMenu() {
                         className="rounded-md"
                         width={40}
                         height={40}
+                        priority={true}
                     />
                     <p className='item-body px-2 align-middle text-xl font-bold'>Tasky</p>
                 </Link>
@@ -58,6 +65,5 @@ export default async function NavigationMenu() {
             </Button>
             <HeaderDropdown email={data.user.email} id={data.user.id}/>
         </header>
-    )
-        ;
+    );
 }

@@ -19,6 +19,13 @@ import {
 
 import { trpc } from '@/utils/trpc';
 
+/**
+ * HeaderBreadcrumb component
+ *
+ * This component renders a breadcrumb navigation with a dropdown menu for project selection.
+ *
+ * @returns {JSX.Element} The rendered breadcrumb component
+ */
 export default function HeaderBreadcrumb() {
   const path = usePathname();
   const project_id = parseInt(path.split('/')[1]);
@@ -29,41 +36,41 @@ export default function HeaderBreadcrumb() {
 
   if (path === '/') {
     return (
-      <div className='flex w-full justify-start pl-6 align-middle'>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>Home</BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+        <div className='flex w-full justify-start pl-6 align-middle'>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>Home</BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
     );
   } else {
     return (
-      <div className='flex w-full justify-start pl-6 align-middle'>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger className='flex items-center gap-1'>
-                  {projectsById.data?.name}
-                  <ChevronDownIcon />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='start'>
-                  {projects.data?.map((project) => (
-                    <Link href={'/' + project.id} key={project.id}>
-                      <DropdownMenuItem key={project.id}>
-                        {project.name}
-                      </DropdownMenuItem>
-                    </Link>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+        <div className='flex w-full justify-start pl-6 align-middle'>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className='flex items-center gap-1'>
+                    {projectsById.data?.name}
+                    <ChevronDownIcon />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='start'>
+                    {projects.data?.map((project) => (
+                        <Link href={'/' + project.id} key={project.id}>
+                          <DropdownMenuItem key={project.id}>
+                            {project.name}
+                          </DropdownMenuItem>
+                        </Link>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
     );
   }
 }

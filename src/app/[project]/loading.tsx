@@ -8,26 +8,31 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
+/**
+ * Loading component that displays a breadcrumb and a series of skeleton loaders.
+ *
+ * @returns {JSX.Element} The loading component.
+ */
 export default function Loading() {
   return (
-    <main className='w-full'>
-      <div className='flex w-full justify-center align-middle'>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href='/'>Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <Skeleton></Skeleton>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-      <Separator />
-      {'abcdefghijk'.split('').map((i) => (
-        <Skeleton key={i} className='mb-4 mt-4 min-w-[500px]'></Skeleton>
-      ))}
-    </main>
+      <main className='w-full'>
+        <div className='flex w-full justify-center align-middle'>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href='/'>Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <Skeleton></Skeleton>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <Separator />
+        {'abcdefghijk'.split('').map((i) => (
+            <Skeleton key={i} className='mb-4 mt-4 min-w-[500px]'></Skeleton>
+        ))}
+      </main>
   );
 }

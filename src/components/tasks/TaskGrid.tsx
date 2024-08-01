@@ -12,13 +12,23 @@ import {Separator} from "@/components/ui/separator";
 
 import {trpc} from "@/utils/trpc";
 
+/**
+ * Component to display a grid of tasks for a given project.
+ *
+ * @param {Object} props - The component props.
+ * @param {number} props.project_id - The ID of the project to fetch tasks for.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function TaskGrid({project_id}: { project_id: number }) {
+    // Fetch tasks for the given project ID using tRPC.
     const {data: tasks} = trpc.getTasks.useQuery({project_id});
 
     // TODO: Check for project assignment
 
+    // Display a loading message if tasks are not yet fetched.
     if (!tasks) return <div className="m-10">Loading..</div>;
 
+    // Display message if there are no tasks to show.
     if (tasks.length === 0) return <div className="m-10">No tasks to show..</div>;
 
     return (
@@ -31,7 +41,7 @@ export default function TaskGrid({project_id}: { project_id: number }) {
                                     <CardTitle className="w-full text-start align-text-bottom h-12">
                                         <div className="w-full flex">
                                             <p className="w-2/3 p-1">{task.name}</p>
-                                            {/*TODO: Owner of project should be displayed as first avatar*/}
+                                            {/* TODO: Owner of project should be displayed as first avatar */}
                                             <TaskAvatarStack task_id={task.id} project_id={project_id}/>
                                         </div>
                                     </CardTitle>

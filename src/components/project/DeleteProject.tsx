@@ -5,6 +5,15 @@ import {Button} from "@/components/ui/button";
 
 import {trpc} from "@/utils/trpc";
 
+/**
+ * DeleteProject component
+ *
+ * This component renders a button that, when clicked, deletes a project with the given id.
+ *
+ * @param {Object} props - The component props
+ * @param {number} props.id - The ID of the project to be deleted
+ * @returns {JSX.Element} The rendered button component
+ */
 export default function DeleteProject({id}: { id: number }) {
     const {mutate} = trpc.deleteProject.useMutation({
         onSuccess: () => {

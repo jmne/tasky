@@ -19,6 +19,17 @@ const formSchema = z.object({
     description: z.string(),
 })
 
+/**
+ * ModifyProject component
+ *
+ * This component renders a dialog form to modify a project with the given properties.
+ *
+ * @param {Object} props - The component props
+ * @param {number} props.id - The ID of the project to be modified
+ * @param {string} props.title - The title of the project
+ * @param {string} props.description - The description of the project
+ * @returns {JSX.Element} The rendered dialog form component
+ */
 export function ModifyProject({id, title, description}: {
     id: number,
     title: string,
@@ -44,6 +55,11 @@ export function ModifyProject({id, title, description}: {
         },
     })
 
+    /**
+     * Handles form submission
+     *
+     * @param {Object} values - The form values
+     */
     function onSubmit(values: z.infer<typeof formSchema>) {
         // TODO: Check if values are different from default values
         mutate({

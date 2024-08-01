@@ -21,6 +21,13 @@ const formSchema = z.object({
     owner: z.string(),
 })
 
+/**
+ * CreateProject component
+ *
+ * This component renders a dialog form to create a new project with the given properties.
+ *
+ * @returns {JSX.Element} The rendered dialog form component
+ */
 export default function CreateProject() {
 
     const {mutate} = trpc.createProject.useMutation({
@@ -52,6 +59,11 @@ export default function CreateProject() {
         },
     })
 
+    /**
+     * Handles form submission
+     *
+     * @param {Object} values - The form values
+     */
     function onSubmit(values: z.infer<typeof formSchema>) {
         mutate({
             name: values.name,

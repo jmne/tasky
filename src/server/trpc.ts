@@ -1,8 +1,8 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import {initTRPC, TRPCError} from '@trpc/server';
 import superjson from 'superjson';
-import { ZodError } from 'zod';
+import {ZodError} from 'zod';
 
-import { createClient } from '@/utils/supabase/server';
+import {createClient} from '@/utils/supabase/server';
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -10,27 +10,17 @@ import { createClient } from '@/utils/supabase/server';
  *
  * @see https://trpc.io/docs/context
  */
-/* export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req, res } = opts;
-
-  // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
-
-  return createInnerTRPCContext({
-    session,
-  });
-}; */
 
 export const createTRPCContext = async (opts: Request) => {
-  const supabase = createClient();
+    const supabase = createClient();
 
-  // React Native will pass their token through headers,
-  // browsers will have the session cookie set
-  const token = opts.headers.get('authorization');
+    // React Native will pass their token through headers,
+    // browsers will have the session cookie set
+    const token = opts.headers.get('authorization');
 
-  return token
-    ? await supabase.auth.getUser(token)
-    : await supabase.auth.getUser();
+    return token
+        ? await supabase.auth.getUser(token)
+        : await supabase.auth.getUser();
 };
 
 /**
@@ -42,17 +32,17 @@ export const createTRPCContext = async (opts: Request) => {
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
+    transformer: superjson,
+    errorFormatter({shape, error}) {
+        return {
+            ...shape,
+            data: {
+                ...shape.data,
+                zodError:
+                    error.cause instanceof ZodError ? error.cause.flatten() : null,
+            },
+        };
+    },
 });
 
 /**
@@ -80,16 +70,16 @@ export const mergeRouters = t.mergeRouters;
 export const procedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.data.user?.id) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
-  }
-  return next({
-    ctx: {
-      // infers the `user` as non-nullable
-      user: ctx.data.user,
-    },
-  });
+const enforceUserIsAuthed = t.middleware(({ctx, next}) => {
+    if (!ctx.data.user?.id) {
+        throw new TRPCError({code: 'UNAUTHORIZED'});
+    }
+    return next({
+        ctx: {
+            // infers the `user` as non-nullable
+            user: ctx.data.user,
+        },
+    });
 });
 
 /**

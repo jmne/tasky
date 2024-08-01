@@ -23,6 +23,15 @@ const formSchema = z.object({
     username: z.string(),
 })
 
+/**
+ * AssignProject component
+ *
+ * This component renders a dialog form to assign or remove a user from a project.
+ *
+ * @param {Object} props - The component props
+ * @param {number} props.project_id - The ID of the project
+ * @returns {JSX.Element} The rendered dialog form component
+ */
 export default function AssignProject({project_id}: { project_id: number }) {
 
     const mutatePost = trpc.postProjectAssignment.useMutation({
@@ -52,6 +61,11 @@ export default function AssignProject({project_id}: { project_id: number }) {
         },
     })
 
+    /**
+     * Handles form submission for adding a user to the project
+     *
+     * @param {Object} values - The form values
+     */
     function onSubmit(values: z.infer<typeof formSchema>) {
 
         mutatePost.mutate({
@@ -62,6 +76,11 @@ export default function AssignProject({project_id}: { project_id: number }) {
         window.location.reload();
     }
 
+    /**
+     * Handles form submission for removing a user from the project
+     *
+     * @param {Object} values - The form values
+     */
     function onSubmitDel(values: z.infer<typeof formSchema>) {
 
         mutateDel.mutate({

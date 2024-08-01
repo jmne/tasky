@@ -29,11 +29,25 @@ const formSchema = z.object({
     status: z.enum(["To-Do", "In progress", "Done"]),
 })
 
+/**
+ * ModifyTask component
+ *
+ * This component renders a dialog form to modify a task with the given properties.
+ *
+ * @param {Object} props - The component props
+ * @param {number} props.id - The ID of the task to be modified
+ * @param {string} props.title - The title of the task
+ * @param {string} props.content - The content/description of the task
+ * @param {number} props.priority - The priority of the task
+ * @param {"To-Do" | "In progress" | "Done"} props.status - The status of the task
+ * @returns {JSX.Element} The rendered dialog form component
+ */
 export function ModifyTask({id, title, content, priority, status}: {
     id: number,
     title: string,
     content: string,
     priority: number,
+    // TODO: Receive enum from backend
     status: "To-Do" | "In progress" | "Done"
 }) {
 
@@ -57,6 +71,11 @@ export function ModifyTask({id, title, content, priority, status}: {
         },
     })
 
+    /**
+     * Handles form submission
+     *
+     * @param {Object} values - The form values
+     */
     function onSubmit(values: z.infer<typeof formSchema>) {
         mutate({
             id: id,

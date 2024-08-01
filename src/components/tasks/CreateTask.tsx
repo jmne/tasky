@@ -30,6 +30,13 @@ const formSchema = z.object({
     status: z.enum(["To-Do", "In progress", "Done"]),
 })
 
+/**
+ * Component for creating a new task.
+ *
+ * @param {Object} props - The component props.
+ * @param {number} props.project_id - The ID of the project to which the task belongs.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function CreateTask({project_id}: { project_id: number }) {
 
     const {mutate} = trpc.createTask.useMutation({
@@ -52,6 +59,15 @@ export default function CreateTask({project_id}: { project_id: number }) {
         },
     })
 
+    /**
+     * Handles form submission for creating a new task.
+     *
+     * @param {Object} values - The form values.
+     * @param {string} values.name - The name of the task.
+     * @param {string} values.content - The content/description of the task.
+     * @param {number} values.priority - The priority of the task.
+     * @param {string} values.status - The status of the task.
+     */
     function onSubmit(values: z.infer<typeof formSchema>) {
         mutate({
             name: values.name,
