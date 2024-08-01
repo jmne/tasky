@@ -1,12 +1,14 @@
 "use client"
-import {trpc} from "@/utils/trpc";
-import {Button} from "@/components/ui/button";
 import {TrashIcon} from "lucide-react";
+
+import {Button} from "@/components/ui/button";
+
+import {trpc} from "@/utils/trpc";
 
 export default function DeleteProject({id}: { id: number }) {
     const {mutate} = trpc.deleteProject.useMutation({
         onSuccess: () => {
-            // To-do: Add toast notification
+            // TODO:: Add toast notification
             console.log("Project deleted")
             window.location.reload();
         },

@@ -56,7 +56,7 @@ export default async function NavigationMenu() {
                     height={30}
                 />
             </Button>
-            <HeaderDropdown email={data.user?.email}/>
+            <HeaderDropdown email={data.user.email} id={data.user.id}/>
         </header>
     )
         ;

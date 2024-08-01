@@ -27,7 +27,7 @@ export function ModifyProject({id, title, description}: {
 
     const {mutate} = trpc.postProject.useMutation({
         onSuccess: () => {
-            // To-do: Add toast notification
+            // TODO:: Add toast notification
             console.log("Project updated")
         },
         onError: (error) => {
@@ -45,6 +45,7 @@ export function ModifyProject({id, title, description}: {
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
+        // TODO: Check if values are different from default values
         mutate({
             id: id,
             name: values.name,

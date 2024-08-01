@@ -39,7 +39,7 @@ export function ModifyTask({id, title, content, priority, status}: {
 
     const {mutate} = trpc.postTask.useMutation({
         onSuccess: () => {
-            // To-do: Add toast notification
+            // TODO:: Add toast notification
             console.log("Task updated")
         },
         onError: (error) => {
@@ -80,7 +80,7 @@ export function ModifyTask({id, title, content, priority, status}: {
     }, [isSubmitSuccessful, reset])
     return (
         <Dialog open={open} onOpenChange={setOpen}> <DialogTrigger asChild>
-            <Button className="w-9/12">Edit</Button>
+            <Button>Edit</Button>
         </DialogTrigger>
             <DialogContent aria-describedby="Task">
                 <DialogTitle>

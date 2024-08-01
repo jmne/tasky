@@ -25,11 +25,11 @@ export default function CreateProject() {
 
     const {mutate} = trpc.createProject.useMutation({
         onSuccess: () => {
-            // To-do: Add toast notification
+            // TODO:: Add toast notification
             console.log("Project create")
         },
         onError: (error) => {
-            // To-do: Add toast notification
+            // TODO:: Add toast notification
             console.error(error)
         }
     })

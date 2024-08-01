@@ -9,13 +9,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+
 import {logout} from "@/app/login/actions";
+import {trpc} from "@/utils/trpc";
 
-interface HeaderDropdownProps {
+
+export default function HeaderDropdown({email, id}: {
     email?: string | undefined
-}
+    id: string
+}) {
 
-export default function HeaderDropdown({email}: HeaderDropdownProps) {
+    const user = trpc.getUser.useQuery({id: id})
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -26,13 +31,14 @@ export default function HeaderDropdown({email}: HeaderDropdownProps) {
                 >
                     <Avatar>
                         <AvatarFallback>
-                            {email ? email.substring(0, 1).toUpperCase() : 'U'}
+                            {user?.data?.username ? user.data.username.substring(0, 1).toUpperCase() : 'U'}
                         </AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-                <DropdownMenuLabel>{email}</DropdownMenuLabel>
+                <DropdownMenuLabel
+                    className="font-bold">{user?.data?.username ? user.data.username : ""} ({email})</DropdownMenuLabel>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
             </DropdownMenuContent>

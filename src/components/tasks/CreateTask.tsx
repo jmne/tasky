@@ -1,6 +1,7 @@
 "use client"
 
 import {zodResolver} from "@hookform/resolvers/zod"
+import {PlusIcon} from "lucide-react";
 import React from "react";
 import {useForm} from "react-hook-form"
 import {z} from "zod"
@@ -21,7 +22,6 @@ import {
 import {Textarea} from "@/components/ui/textarea";
 
 import {trpc} from "@/utils/trpc";
-import {PlusIcon} from "lucide-react";
 
 const formSchema = z.object({
     name: z.string(),
@@ -34,7 +34,7 @@ export default function CreateTask({project_id}: { project_id: number }) {
 
     const {mutate} = trpc.createTask.useMutation({
         onSuccess: () => {
-            // To-do: Add toast notification
+            // TODO:: Add toast notification
             console.log("Task updated")
         },
         onError: (error) => {
