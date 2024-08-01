@@ -110,26 +110,64 @@ export const projectRouter = router({
     .input(
       z.object({
         project_id: z.number(),
-        assignee: z.string().array(),
+        assignee: z.string(),
       })
     )
     .mutation(async ({ input }) => {
       const supabase = createClient();
 
-      for (const assignee of input.assignee) {
-        const project:
-          | PostgrestResponseSuccess<Tables<'assignment_project'>[]>
-          | PostgrestResponseFailure = await supabase
-          .from('assignment_project')
-          .insert({
-            project_id: input.project_id,
-            assignee: assignee,
-          })
-          .returns<Tables<'assignment_project'>[]>();
-        if (project.error) {
-          throw new Error(project.error.message);
-        }
+      const profile = await supabase
+        .from('profile')
+        .select('id')
+        .eq('username', input.assignee)
+        .single<Tables<'profile'>>();
+
+      const uid = profile.data?.id ? profile.data.id : '';
+
+      const project:
+        | PostgrestResponseSuccess<Tables<'assignment_project'>[]>
+        | PostgrestResponseFailure = await supabase
+        .from('assignment_project')
+        .insert({
+          project_id: input.project_id,
+          assignee: uid,
+        })
+        .returns<Tables<'assignment_project'>[]>();
+      if (project.error) {
+        throw new Error(project.error.message);
       }
+      return project.data;
+    }),
+  removeProjectAssignment: procedure
+    .input(
+      z.object({
+        project_id: z.number(),
+        assignee: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const supabase = createClient();
+
+      const profile = await supabase
+        .from('profile')
+        .select('id')
+        .eq('username', input.assignee)
+        .single<Tables<'profile'>>();
+
+      const uid = profile.data?.id ? profile.data.id : '';
+
+      const project:
+        | PostgrestResponseSuccess<Tables<'assignment_project'>[]>
+        | PostgrestResponseFailure = await supabase
+        .from('assignment_project')
+        .delete()
+        .eq('project_id', input.project_id)
+        .eq('assignee', uid)
+        .returns<Tables<'assignment_project'>[]>();
+      if (project.error) {
+        throw new Error(project.error.message);
+      }
+      return project.data;
     }),
   createProject: procedure
     .input(

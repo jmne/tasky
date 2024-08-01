@@ -124,6 +124,69 @@ export const taskRouter = router({
       }
       return task.data;
     }),
+  postTaskAssignment: procedure
+    .input(
+      z.object({
+        task_id: z.number(),
+        assignee: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const supabase = createClient();
+
+      const profile = await supabase
+        .from('profile')
+        .select('id')
+        .eq('username', input.assignee)
+        .single<Tables<'profile'>>();
+
+      const uid = profile.data?.id ? profile.data.id : '';
+
+      const task:
+        | PostgrestResponseSuccess<Tables<'assignment_task'>[]>
+        | PostgrestResponseFailure = await supabase
+        .from('assignment_task')
+        .insert({
+          task_id: input.task_id,
+          assignee: uid,
+        })
+        .returns<Tables<'assignment_task'>[]>();
+      if (task.error) {
+        throw new Error(task.error.message);
+      }
+      return task.data;
+    }),
+  removeTaskAssignment: procedure
+    .input(
+      z.object({
+        task_id: z.number(),
+        assignee: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const supabase = createClient();
+
+      const profile = await supabase
+        .from('profile')
+        .select('id')
+        .eq('username', input.assignee)
+        .single<Tables<'profile'>>();
+
+      const uid = profile.data?.id ? profile.data.id : '';
+
+      const task:
+        | PostgrestResponseSuccess<Tables<'assignment_task'>[]>
+        | PostgrestResponseFailure = await supabase
+        .from('assignment_task')
+        .delete()
+        .eq('task_id', input.task_id)
+        .eq('assignee', uid)
+        .returns<Tables<'assignment_task'>[]>();
+      if (task.error) {
+        throw new Error(task.error.message);
+      }
+      return task.data;
+    }),
   createTask: procedure
     .input(
       z.object({
