@@ -1,11 +1,10 @@
 # Usage
-#   Start:          docker compose up
-#   With helpers:   docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml up
-#   Stop:           docker compose down
-#   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
+#   Start: docker compose up
+#   With helpers: docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml up
+#   Stop: docker compose down
+#   Destroy: docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
 name: supabase
-version: "3.8"
 
 services:
   studio:
@@ -75,6 +74,7 @@ services:
       # https://github.com/supabase/supabase/issues/12661
       - ./volumes/api/kong.yml:/home/kong/temp.yml:ro
 
+
   auth:
     container_name: supabase-auth
     image: supabase/gotrue:v2.151.0
@@ -99,7 +99,7 @@ services:
       retries: 3
     restart: unless-stopped
     environment:
-      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_HOST: localhost
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: ${API_EXTERNAL_URL}
 
@@ -431,12 +431,33 @@ services:
     container_name: frontend
     build: ../
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:3000" ]
+      timeout: 5s
+      interval: 5s
+      retries: 10
     environment:
       - NODE_ENV=production
     ports:
       - "3000:3000"
-    links:
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./volumes/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - nextjs
       - kong
+      - analytics
+      - storage
+
 
 volumes:
   db-config:
+
+networks:
+  default:
+    driver: bridge
