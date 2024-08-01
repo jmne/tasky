@@ -21,8 +21,18 @@ export const userRouter = router({
         .from('profile')
         .select('*')
         .eq('id', input.id)
-        .returns<Tables<'profile'>>();
+        .single<Tables<'profile'>>();
 
       return user.data;
     }),
+  getAllUser: procedure.query(async () => {
+    // Retrieve the user with the given ID
+    const db = createClient();
+    const user = await db
+      .from('profile')
+      .select('*')
+      .returns<Tables<'profile'>[]>();
+
+    return user.data;
+  }),
 });

@@ -4,15 +4,10 @@ const nextConfig = {
     dirs: ['src'],
   },
 
+  distDir: 'build',
+
   reactStrictMode: true,
   swcMinify: true,
-
-  // Uncoment to add domain whitelist
-  // images: {
-  //   domains: [
-  //     'res.cloudinary.com',
-  //   ],
-  // },
 
   // SVGR
   webpack(config) {

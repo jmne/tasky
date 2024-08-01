@@ -1,39 +1,8 @@
-import {
-    type User,
-    createPagesServerClient,
-} from "@supabase/auth-helpers-nextjs";
-import {initTRPC, TRPCError} from "@trpc/server";
-import {type CreateNextContextOptions} from "@trpc/server/adapters/next";
-import superjson from "superjson";
-import {ZodError} from "zod";
+import { initTRPC, TRPCError } from '@trpc/server';
+import superjson from 'superjson';
+import { ZodError } from 'zod';
 
-/**
- * 1. CONTEXT
- *
- * This section defines the "contexts" that are available in the backend API.
- *
- * These allow you to access things when processing a request, like the database, the session, etc.
- */
-
-interface CreateContextOptions {
-    user: User | null;
-}
-
-/**
- * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
- * it from here.
- *
- * Examples of things you may need it for:
- * - testing, so we don't have to mock Next.js' req/res
- * - tRPC's `createSSGHelpers`, where we don't have req/res
- *
- * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
- */
-export const createInnerTRPCContext = (opts: CreateContextOptions) => {
-    return {
-        user: opts.user,
-    };
-};
+import { createClient } from '@/utils/supabase/server';
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -52,20 +21,16 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
   });
 }; */
 
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-    const supabase = createPagesServerClient(opts);
+export const createTRPCContext = async (opts: Request) => {
+  const supabase = createClient();
 
-    // React Native will pass their token through headers,
-    // browsers will have the session cookie set
-    const token = opts.req.headers.authorization;
+  // React Native will pass their token through headers,
+  // browsers will have the session cookie set
+  const token = opts.headers.get('authorization');
 
-    const user = token
-        ? await supabase.auth.getUser(token)
-        : await supabase.auth.getUser();
-
-    return createInnerTRPCContext({
-        user: user.data.user,
-    });
+  return token
+    ? await supabase.auth.getUser(token)
+    : await supabase.auth.getUser();
 };
 
 /**
@@ -77,17 +42,17 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
-    transformer: superjson,
-    errorFormatter({shape, error}) {
-        return {
-            ...shape,
-            data: {
-                ...shape.data,
-                zodError:
-                    error.cause instanceof ZodError ? error.cause.flatten() : null,
-            },
-        };
-    },
+  transformer: superjson,
+  errorFormatter({ shape, error }) {
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    };
+  },
 });
 
 /**
@@ -115,16 +80,16 @@ export const mergeRouters = t.mergeRouters;
 export const procedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ctx, next}) => {
-    if (!ctx.user?.id) {
-        throw new TRPCError({code: "UNAUTHORIZED"});
-    }
-    return next({
-        ctx: {
-            // infers the `user` as non-nullable
-            user: ctx.user,
-        },
-    });
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.data.user?.id) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  return next({
+    ctx: {
+      // infers the `user` as non-nullable
+      user: ctx.data.user,
+    },
+  });
 });
 
 /**

@@ -8,7 +8,7 @@ const handler = async (req: Request) =>
     endpoint: '/api',
     req,
     router: appRouter,
-    createContext: createTRPCContext,
+    createContext: () => createTRPCContext(req),
   });
 
 export { handler as GET, handler as POST };
