@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/button";
 
 import {trpc} from "@/utils/trpc";
 
-export default function DeleteTask({id}: { id: number }) {
+export default function DeleteTask({task_id}: { task_id: number }) {
     const {mutate} = trpc.deleteTask.useMutation({
         onSuccess: () => {
             // TODO:: Add toast notification
@@ -19,7 +19,7 @@ export default function DeleteTask({id}: { id: number }) {
     return (
         <Button
             onClick={() => {
-                mutate({id});
+                mutate({id: task_id});
             }}
             className="ml-2 bg-red-500 rounded-md hover:bg-red-800">
             <TrashIcon/>

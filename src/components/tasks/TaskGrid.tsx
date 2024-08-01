@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import AssignTask from "@/components/tasks/AssignTask";
 import DeleteTask from "@/components/tasks/DeleteTask";
 import {ModifyTask} from "@/components/tasks/ModifyTask";
 import TaskAvatarStack from "@/components/tasks/TaskAvatarStack";
@@ -51,7 +52,8 @@ export default function TaskGrid({project_id}: { project_id: number }) {
                                                     status={task.status ? task.status : "To-Do"}
                                                     priority={task.priority ? task.priority : 0}
                                         />
-                                        <DeleteTask id={task.id}/>
+                                        <AssignTask task_id={task.id}/>
+                                        <DeleteTask task_id={task.id}/>
                                     </div>
                                 </CardFooter>
                             </Card>
