@@ -1,4 +1,3 @@
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -44,13 +43,11 @@ COMMENT ON TYPE "public"."status" IS 'state of a task';
 
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-AS $$
-begin
-    insert into public.profile (id, full_name, avatar_url)
-    values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
+AS $$begin
+    insert into public.profile (id, username)
+    values (new.id, new.raw_user_meta_data->>'username');
     return new;
-end;
-$$;
+end;$$;
 
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "supabase_admin";
 
