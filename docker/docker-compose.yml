@@ -1,15 +1,16 @@
 # Usage
-#   Start: docker compose up
-#   With helpers: docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml up
-#   Stop: docker compose down
-#   Destroy: docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
+#   Start:          docker compose up
+#   With helpers:   docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml up
+#   Stop:           docker compose down
+#   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
 name: supabase
+version: "3.8"
 
 services:
   studio:
     container_name: supabase-studio
-    image: supabase/studio:20240701-05dfbec
+    image: supabase/studio:20240729-ce42139
     restart: unless-stopped
     healthcheck:
       test:
@@ -74,7 +75,6 @@ services:
       # https://github.com/supabase/supabase/issues/12661
       - ./volumes/api/kong.yml:/home/kong/temp.yml:ro
 
-
   auth:
     container_name: supabase-auth
     image: supabase/gotrue:v2.151.0
@@ -99,7 +99,7 @@ services:
       retries: 3
     restart: unless-stopped
     environment:
-      GOTRUE_API_HOST: localhost
+      GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: ${API_EXTERNAL_URL}
 
@@ -357,7 +357,7 @@ services:
   # Comment out everything below this point if you are using an external Postgres database
   db:
     container_name: supabase-db
-    image: supabase/postgres:15.1.1.61
+    image: supabase/postgres:15.1.1.78
     healthcheck:
       test: pg_isready -U postgres -h localhost
       interval: 5s
@@ -394,8 +394,6 @@ services:
       - ./volumes/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
       # Initialize the database settings with JWT_SECRET and JWT_EXP
       - ./volumes/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
-      # Initialize the database public schema
-      - ./volumes/db/data/init/data.sql:/docker-entrypoint-initdb.d/init-scripts/init.sql:Z
       # PGDATA directory is persisted between restarts
       - ./volumes/db/data:/var/lib/postgresql/data:Z
       # Changes required for Analytics support
@@ -427,37 +425,5 @@ services:
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
     command: [ "--config", "etc/vector/vector.yml" ]
 
-  nextjs:
-    container_name: frontend
-    build: ../
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "http://localhost:3000" ]
-      timeout: 5s
-      interval: 5s
-      retries: 10
-    environment:
-      - NODE_ENV=production
-    ports:
-      - "3000:3000"
-
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./volumes/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "80:80"
-    restart: always
-    depends_on:
-      - nextjs
-      - kong
-      - analytics
-      - storage
-
-
 volumes:
   db-config:
-
-networks:
-  default:
-    driver: bridge

@@ -8,8 +8,6 @@ const nextConfig = {
     swcMinify: true,
     poweredByHeader: false,
 
-    output: "standalone",
-
     // SVGR
     webpack(config) {
         config.module.rules.push({
