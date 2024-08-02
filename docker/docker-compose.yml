@@ -5,7 +5,6 @@
 #   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
 
 name: supabase
-version: "3.8"
 
 services:
   studio:
@@ -387,8 +386,10 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXP: ${JWT_EXPIRY}
     volumes:
+      - ./volumes/db/init/data.sql:/docker-entrypoint-initdb.d/init-scripts/999-init.sql:Z
+      # Add init-scripts to create the required roles and schemas
       - ./volumes/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
-      # Must be superuser to create event trigger
+      # Must be superuser to create an event trigger
       - ./volumes/db/webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
       # Must be superuser to alter reserved role
       - ./volumes/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
@@ -424,6 +425,19 @@ services:
     environment:
       LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
     command: [ "--config", "etc/vector/vector.yml" ]
+
+
+  nextjs:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+
+
 
 volumes:
   db-config:

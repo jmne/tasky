@@ -13,7 +13,7 @@ export function createClient() {
 
     return createServerClient<Database>(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_INTERNAL_SUPABASE_URL!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {

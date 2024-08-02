@@ -12,7 +12,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea";
 
-import {createClient} from "@/utils/supabase/client";
+import {supabase} from "@/utils/supabase/client";
 import {trpc} from "@/utils/trpc";
 
 const formSchema = z.object({
@@ -41,15 +41,13 @@ export default function CreateProject() {
         }
     })
 
-    const supabase = createClient();
-
     useEffect(() => {
         const fetchUser = async () => {
             const {data} = await supabase.auth.getUser();
             form.setValue("owner", data?.user?.id ? data.user.id : "");
         };
         fetchUser();
-    }, []);
+    }, [supabase.auth]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

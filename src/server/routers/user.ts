@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 import {procedure, router} from '@/server/trpc';
-import {createClient} from '@/utils/supabase/client';
+import {createClient} from '@/utils/supabase/server';
 
 import {Tables} from '../../../types/supabase';
 

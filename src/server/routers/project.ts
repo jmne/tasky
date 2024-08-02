@@ -243,7 +243,7 @@ export const projectRouter = router({
                 owner: z.string(),
             })
         )
-        .mutation(async ({input}) => {
+        .mutation(async (ops) => {
             const supabase = createClient();
 
             const project:
@@ -251,9 +251,9 @@ export const projectRouter = router({
                 | PostgrestResponseFailure = await supabase
                 .from('project')
                 .insert({
-                    name: input.name,
-                    description: input.description,
-                    owner: input.owner,
+                    name: ops.input.name,
+                    description: ops.input.description,
+                    owner: ops.ctx.data.user?.id ? ops.ctx.data.user.id : ops.input.owner,
                 })
                 .returns<Tables<'project'>[]>();
             if (project.error) {

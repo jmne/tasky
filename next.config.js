@@ -4,6 +4,8 @@ const nextConfig = {
         dirs: ['src'],
     },
 
+    output: "standalone",
+
     reactStrictMode: true,
     swcMinify: true,
     poweredByHeader: false,
