@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-import {logout} from "@/app/login/actions";
+import {logout} from "@/utils/useractions";
 import {trpc} from "@/utils/trpc";
 
 /**

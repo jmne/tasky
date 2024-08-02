@@ -20,6 +20,14 @@ export default function ProjectGrid() {
 
     const projects = trpc.getProjects.useQuery()
 
+    if (!projects.data) {
+        return <div>Loading...</div>
+    }
+
+    if (projects.error) {
+        return <div>Error: {projects.error.message}</div>
+    }
+
     return (
         <div className="flex flex-wrap w-full gap-4 pl-10 pr-10 justify-center">
             {/* Project Card */}

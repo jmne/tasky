@@ -77,7 +77,6 @@ export default function CreateTask({project_id}: { project_id: number }) {
             project: project_id,
         })
         setOpen(false);
-        window.location.reload();
     }
 
     const [open, setOpen] = React.useState(false)

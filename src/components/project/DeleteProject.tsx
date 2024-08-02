@@ -19,7 +19,6 @@ export default function DeleteProject({id}: { id: number }) {
         onSuccess: () => {
             // TODO:: Add toast notification
             console.log("Project deleted")
-            window.location.reload();
         },
         onError: (error) => {
             console.error(error)

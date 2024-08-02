@@ -33,7 +33,7 @@ export default function CreateProject() {
     const {mutate} = trpc.createProject.useMutation({
         onSuccess: () => {
             // TODO:: Add toast notification
-            console.log("Project create")
+            console.log("Project created successfully")
         },
         onError: (error) => {
             // TODO:: Add toast notification
@@ -71,7 +71,6 @@ export default function CreateProject() {
             owner: values.owner,
         })
         setOpen(false);
-        window.location.reload();
     }
 
     const [open, setOpen] = React.useState(false)

@@ -85,7 +85,6 @@ export function ModifyTask({id, title, content, priority, status}: {
             status: values.status
         })
         setOpen(false);
-        window.location.reload();
     }
 
     const [open, setOpen] = React.useState(false)

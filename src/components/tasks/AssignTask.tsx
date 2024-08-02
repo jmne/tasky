@@ -70,7 +70,6 @@ export default function AssignTask({task_id}: { task_id: number }) {
             assignee: values.username,
         });
         setOpen(false);
-        window.location.reload();
     }
 
     /**
@@ -85,7 +84,6 @@ export default function AssignTask({task_id}: { task_id: number }) {
             assignee: values.username,
         });
         setOpen(false);
-        window.location.reload();
     }
 
     const [open, setOpen] = React.useState(false);

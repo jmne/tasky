@@ -17,7 +17,6 @@ export default function DeleteTask({task_id}: { task_id: number }) {
         onSuccess: () => {
             // TODO:: Add toast notification
             console.log("Task deleted")
-            window.location.reload();
         },
         onError: (error) => {
             console.error(error)

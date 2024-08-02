@@ -73,7 +73,6 @@ export default function AssignProject({project_id}: { project_id: number }) {
             assignee: values.username,
         })
         setOpen(false);
-        window.location.reload();
     }
 
     /**
@@ -88,7 +87,6 @@ export default function AssignProject({project_id}: { project_id: number }) {
             assignee: values.username,
         })
         setOpen(false);
-        window.location.reload();
     }
 
     const [open, setOpen] = React.useState(false)

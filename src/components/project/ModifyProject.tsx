@@ -68,7 +68,6 @@ export function ModifyProject({id, title, description}: {
             description: values.description,
         })
         setOpen(false);
-        window.location.reload();
     }
 
     const [open, setOpen] = React.useState(false)
