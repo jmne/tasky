@@ -13,7 +13,7 @@ import {signup} from "./actions";
 // Define the schema for the form using Zod
 const formSchema = z.object({
     email: z.string().email({message: "Invalid email address"}),
-    password: z.string().min(4, {message: "Password must be at least 4 characters long"}),
+    password: z.string().min(6, {message: "Password must be at least 6 characters long"}),
     username: z.string().min(4, {message: "Username must be at least 4 characters long"}),
 })
 
