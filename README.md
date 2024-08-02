@@ -9,7 +9,7 @@ This is a simple task manager that allows you to add, delete, and edit tasks.
 1. Clone the repository
 2. Rename (and modify) the .env.example files to your needs [see .env.example](./.env.example)
    and [see Docker .env.example](./docker/.env.example)
-3. Run `cd docker/ && docker-compose up -d` to start the project
+3. Run `cd docker` and `docker compose up -d` to start the project
 4. Open `http://localhost:3000`
 5. Enjoy!
 
