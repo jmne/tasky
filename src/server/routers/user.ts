@@ -33,6 +33,10 @@ export const userRouter = router({
                 .eq('id', input.id)
                 .single<Tables<'profile'>>();
 
+            if (user.error) {
+                throw new Error(user.error.message);
+            }
+
             return user.data;
         }),
 
@@ -49,6 +53,35 @@ export const userRouter = router({
             .select('*')
             .returns<Tables<'profile'>[]>();
 
+        if (user.error) {
+            throw new Error(user.error.message);
+        }
+
         return user.data;
     }),
+    /**
+     * Create new user.
+     *
+     * @returns {Promise<Array<Object>>} An array of created user data.
+     */
+    createUser: procedure
+        .input(z.object({
+            id: z.string(),
+            username: z.string(),
+
+        }))
+        .mutation(async ({input}) => {
+            // Retrieve all users
+            const db = createClient();
+            const user = await db
+                .from('profile')
+                .insert({id: input.id, username: input.username})
+                .returns<Tables<'profile'>[]>();
+
+            if (user.error) {
+                throw new Error(user.error.message);
+            }
+
+            return user.data;
+        }),
 });

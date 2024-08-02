@@ -8,12 +8,13 @@ import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input"
 
-import {login} from "./actions";
+import {signup} from "./actions";
 
 // Define the schema for the form using Zod
 const formSchema = z.object({
     email: z.string().email({message: "Invalid email address"}),
     password: z.string().min(4, {message: "Password must be at least 4 characters long"}),
+    username: z.string().min(4, {message: "Username must be at least 4 characters long"}),
 })
 
 /**
@@ -30,6 +31,7 @@ export default function Dashboard() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
+            username: "",
             password: ""
         },
     })
@@ -42,10 +44,8 @@ export default function Dashboard() {
      * @param {string} values.password - The password entered by the user
      */
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const error = await login(values)
-        if (error) {
-            form.setError("email", {message: error})
-        }
+        const error = await signup(values)
+        console.log(error)
     }
 
     return (
@@ -53,9 +53,9 @@ export default function Dashboard() {
             <div className="flex items-center justify-center py-12">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
-                        <h1 className="text-3xl font-bold">Login</h1>
+                        <h1 className="text-3xl font-bold">Sign up</h1>
                         <p className="text-balance text-muted-foreground">
-                            Enter your email below to login to your account
+                            Create an account to get started
                         </p>
                     </div>
                     <Form {...form}>
@@ -75,11 +75,24 @@ export default function Dashboard() {
                                 }}/>
                             <FormField
                                 control={form.control}
+                                name="username"
+                                render={({field}) => {
+                                    return (
+                                        <FormItem>
+                                            <FormLabel id="username">Username</FormLabel>
+                                            <FormControl id="username">
+                                                <Input placeholder="user123" {...field} />
+                                            </FormControl>
+                                            <FormMessage id="username"/>
+                                        </FormItem>)
+                                }}/>
+                            <FormField
+                                control={form.control}
                                 name="password"
                                 render={({field}) => {
                                     return (
                                         <FormItem>
-                                            <FormLabel id="password">Email</FormLabel>
+                                            <FormLabel id="password">Password</FormLabel>
                                             <FormControl id="password">
                                                 <Input type="password" placeholder="******" {...field} />
                                             </FormControl>
@@ -90,9 +103,9 @@ export default function Dashboard() {
                         </form>
                     </Form>
                     <div className="mt-4 text-center text-sm">
-                        Don&apos;t have an account?{" "}
-                        <Link href="/signup" className="underline">
-                            Sign up
+                        Already have an account?{" "}
+                        <Link href="/login" className="underline">
+                            Login
                         </Link>
                     </div>
                 </div>
