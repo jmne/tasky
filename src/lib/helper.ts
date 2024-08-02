@@ -19,7 +19,7 @@ export function openGraph({
   siteName,
   templateTitle,
   description,
-  logo = 'https://localhost:3000/images/logo.jpg',
+  logo = 'http://localhost:3000/images/logo.jpg',
 }: OpenGraphType): string {
   const ogLogo = encodeURIComponent(logo);
   const ogSiteName = encodeURIComponent(siteName.trim());
@@ -28,7 +28,7 @@ export function openGraph({
     : undefined;
   const ogDesc = encodeURIComponent(description.trim());
 
-  return `https://localhost:3000/api/general?siteName=${ogSiteName}&description=${ogDesc}&logo=${ogLogo}${
+  return `http://localhost:3000/api/general?siteName=${ogSiteName}&description=${ogDesc}&logo=${ogLogo}${
     ogTemplateTitle ? `&templateTitle=${ogTemplateTitle}` : ''
   }`;
 }

@@ -7,7 +7,7 @@ import {type NextRequest, NextResponse} from 'next/server'
  * @param {NextRequest} request - The incoming request object.
  * @returns {Promise<NextResponse>} The response object after updating the session.
  */
-export async function updateSession(request: NextRequest): Promise<NextResponse> {
+export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
         request,
     })
@@ -52,6 +52,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     if (
         !user &&
         !request.nextUrl.pathname.startsWith('/login') &&
+        !request.nextUrl.pathname.startsWith('/signup') &&
         !request.nextUrl.pathname.startsWith('/auth')
     ) {
         const url = request.nextUrl.clone()
